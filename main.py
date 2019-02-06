@@ -89,7 +89,7 @@ def abs_sobel_thresh(img, orient='x', sobel_kernel=3, thresh=(0, 255)):
     # 6) Return this mask as your binary_output image
     return grad_output
 
-def mag_thresh(img, sobel_kernel=3, mag_thresh=(0, 255)):
+def mag_thresh(img, sobel_kernel=3, thresh=(0, 255)):
     # Apply the following steps to img
     # 1) Convert to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
@@ -102,7 +102,7 @@ def mag_thresh(img, sobel_kernel=3, mag_thresh=(0, 255)):
     scaled_sobel = np.uint8(255*sobelxy/np.max(sobelxy))
     # 5) Create a binary mask where mag thresholds are met
     mag_output = np.zeros_like(scaled_sobel)
-    mag_output[(scaled_sobel >= mag_thresh[0]) & (scaled_sobel <= mag_thresh[1])] = 1
+    mag_output[(scaled_sobel >= thresh[0]) & (scaled_sobel <= thresh[1])] = 1
     # 6) Return this mask as your binary_output image
     return mag_output
 
@@ -158,6 +158,37 @@ def pipeline(img, s_thresh=(170, 255), sx_thresh=(20, 100)):
     # Stack each channel
     color_binary = np.dstack(( np.zeros_like(sxbinary), sxbinary, s_binary)) * 255
     return color_binary
+
+def sobel_plus_hsv_test(inp_img, ksize=5):
+    image = pipeline(inp_img)
+    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=(20, 100))
+    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=(20, 100))
+    mag_binary = mag_thresh(image, sobel_kernel=ksize, thresh=(30, 100))
+    dir_binary = dir_thresh(image, sobel_kernel=ksize, thresh=(0.7, 1.3))
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
+    f.tight_layout()
+    ax1.imshow(inp_img)
+    ax2.imshow(image)
+    ax3.imshow(gradx, cmap="gray")
+    ax4.imshow(grady, cmap="gray")
+    ax5.imshow(mag_binary, cmap="gray")
+    ax6.imshow(dir_binary, cmap="gray")
+    ax7.imshow(combined, cmap="gray")
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+    return combined
+
+def sobel_plus_hsv_output(inp_img, ksize=5):
+    image = pipeline(inp_img)
+    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=(20, 100))
+    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=(20, 100))
+    mag_binary = mag_thresh(image, sobel_kernel=ksize, thresh=(30, 100))
+    dir_binary = dir_thresh(image, sobel_kernel=ksize, thresh=(0.7, 1.3))
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    return combined
 
 if __name__ == "__main__":
     ## Testing camera calibration and image undistortion

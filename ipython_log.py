@@ -225,3 +225,290 @@ for image in image_list:
     image_read = mpimg.imread(image)
     sobel_plus_hsv_test(image_read)
     
+for image in image_list:
+    image_read = mpimg.imread(image)
+    sobel_plus_hsv_test(image_read)
+    
+def sobel_plus_hsv_test(inp_img, ksize=5):
+    image = pipeline(inp_img)
+    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=(20, 100))
+    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=(20, 100))
+    mag_binary = mag_thresh(image, sobel_kernel=ksize, mag_thresh=(30, 100))
+    dir_binary = dir_threshold(image, sobel_kernel=ksize, thresh=(0.7, 1.3))
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
+    f.tight_layout()
+    ax1.imshow(inp_img)
+    ax2.imshow(image)
+    ax3.imshow(gradx, cmap="gray")
+    ax4.imshow(grady, cmap="gray")
+    ax5.imshow(mag_binary, cmap="gray")
+    ax6.imshow(dir_binary, cmap="gray")
+    ax7.imshow(combined, cmap="gray")
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+    
+for image in image_list:
+    image_read = mpimg.imread(image)
+    sobel_plus_hsv_test(image_read)
+    
+def sobel_plus_hsv_test(inp_img, ksize=5):
+    image = pipeline(inp_img)
+    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=(20, 100))
+    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=(20, 100))
+    mag_binary = mag_thresh(image, sobel_kernel=ksize, mag_thresh=(30, 100))
+    dir_binary = dir_threshold(image, sobel_kernel=ksize, thresh=(0.7, 1.3))
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
+    f.tight_layout()
+    ax1.imshow(inp_img)
+    ax2.imshow(image)
+    ax3.imshow(gradx, cmap="gray")
+    ax4.imshow(grady, cmap="gray")
+    ax5.imshow(mag_binary, cmap="gray")
+    ax6.imshow(dir_binary, cmap="gray")
+    ax7.imshow(combined, cmap="gray")
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+    return combined
+def sobel_plus_hsv_output(inp_img, ksize=5):
+    image = pipeline(inp_img)
+    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=(20, 100))
+    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=(20, 100))
+    mag_binary = mag_thresh(image, sobel_kernel=ksize, mag_thresh=(30, 100))
+    dir_binary = dir_threshold(image, sobel_kernel=ksize, thresh=(0.7, 1.3))
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
+    f.tight_layout()
+    ax1.imshow(inp_img)
+    ax2.imshow(image)
+    ax3.imshow(gradx, cmap="gray")
+    ax4.imshow(grady, cmap="gray")
+    ax5.imshow(mag_binary, cmap="gray")
+    ax6.imshow(dir_binary, cmap="gray")
+    ax7.imshow(combined, cmap="gray")
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+    return combined
+def sobel_plus_hsv_test(inp_img, ksize=5, s_thresh=(170, 255), sx_thresh=(20, 100), x_thresh=(20, 100), y_thresh=(20, 100), mag_thresh=(30, 100), dir_thresh=(0.7, 1.3)):
+    image = pipeline(inp_img, s_thresh=s_thresh, sx_thresh=sx_thresh)
+    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=x_thresh)
+    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=y_thresh)
+    mag_binary = mag_thresh(image, sobel_kernel=ksize, mag_thresh=mag_thresh)
+    dir_binary = dir_threshold(image, sobel_kernel=ksize, thresh=dir_thresh)
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
+    f.tight_layout()
+    ax1.imshow(inp_img)
+    ax2.imshow(image)
+    ax3.imshow(gradx, cmap="gray")
+    ax4.imshow(grady, cmap="gray")
+    ax5.imshow(mag_binary, cmap="gray")
+    ax6.imshow(dir_binary, cmap="gray")
+    ax7.imshow(combined, cmap="gray")
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+    return combined
+for image in image_list:
+    image_read = mpimg.imread(image)
+    sobel_plus_hsv_test(image_read)
+    
+def sobel_plus_hsv_test(inp_img, ksize=5, s_thresh=(170, 255), sx_thresh=(20, 100), x_thresh=(20, 100), y_thresh=(20, 100), mag_thresh=(30, 100), dir_thresh=(0.7, 1.3)):
+    image = pipeline(inp_img, s_thresh=s_thresh, sx_thresh=sx_thresh)
+    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=x_thresh)
+    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=y_thresh)
+    mag_binary = mag_thresh(image, sobel_kernel=ksize, thresh=mag_thresh)
+    dir_binary = dir_thres(image, sobel_kernel=ksize, thresh=dir_thresh)
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
+    f.tight_layout()
+    ax1.imshow(inp_img)
+    ax2.imshow(image)
+    ax3.imshow(gradx, cmap="gray")
+    ax4.imshow(grady, cmap="gray")
+    ax5.imshow(mag_binary, cmap="gray")
+    ax6.imshow(dir_binary, cmap="gray")
+    ax7.imshow(combined, cmap="gray")
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+    return combined
+from main import *
+for image in image_list:
+    image_read = mpimg.imread(image)
+    sobel_plus_hsv_test(image_read)
+    
+from main import *
+def sobel_plus_hsv_test(inp_img, ksize=5, s_thresh=(170, 255), sx_thresh=(20, 100), x_thresh=(20, 100), y_thresh=(20, 100), mag_thresh=(30, 100), dir_thresh=(0.7, 1.3)):
+    image = pipeline(inp_img, s_thresh=s_thresh, sx_thresh=sx_thresh)
+    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=x_thresh)
+    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=y_thresh)
+    mag_binary = mag_thresh(image, sobel_kernel=ksize, thresh=mag_thresh)
+    dir_binary = dir_thres(image, sobel_kernel=ksize, thresh=dir_thresh)
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
+    f.tight_layout()
+    ax1.imshow(inp_img)
+    ax2.imshow(image)
+    ax3.imshow(gradx, cmap="gray")
+    ax4.imshow(grady, cmap="gray")
+    ax5.imshow(mag_binary, cmap="gray")
+    ax6.imshow(dir_binary, cmap="gray")
+    ax7.imshow(combined, cmap="gray")
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+    return combined
+for image in image_list:
+    image_read = mpimg.imread(image)
+    sobel_plus_hsv_test(image_read)
+    
+def sobel_plus_hsv_test(inp_img, ksize=5, s_thresh=(170, 255), sx_thresh=(20, 100), x_thresh=(20, 100), y_thresh=(20, 100), mag_thresh=(30, 100), dir_thresh=(0.7, 1.3)):
+    image = pipeline(inp_img, s_thresh=s_thresh, sx_thresh=sx_thresh)
+    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=x_thresh)
+    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=y_thresh)
+    #mag_binary = mag_thresh(image, sobel_kernel=ksize, thresh=mag_thresh)
+    dir_binary = dir_thres(image, sobel_kernel=ksize, thresh=dir_thresh)
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
+    f.tight_layout()
+    ax1.imshow(inp_img)
+    ax2.imshow(image)
+    ax3.imshow(gradx, cmap="gray")
+    ax4.imshow(grady, cmap="gray")
+    ax5.imshow(mag_binary, cmap="gray")
+    ax6.imshow(dir_binary, cmap="gray")
+    ax7.imshow(combined, cmap="gray")
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+    return combined
+for image in image_list:
+    image_read = mpimg.imread(image)
+    sobel_plus_hsv_test(image_read)
+    
+def sobel_plus_hsv_test(inp_img, ksize=5, s_thresh=(170, 255), sx_thresh=(20, 100), x_thresh=(20, 100), y_thresh=(20, 100), mag_thresh=(30, 100), dir_thresh=(0.7, 1.3)):
+    image = pipeline(inp_img, s_thresh=s_thresh, sx_thresh=sx_thresh)
+    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=x_thresh)
+    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=y_thresh)
+    #mag_binary = mag_thresh(image, sobel_kernel=ksize, thresh=mag_thresh)
+    dir_binary = dir_thresh(image, sobel_kernel=ksize, thresh=dir_thresh)
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
+    f.tight_layout()
+    ax1.imshow(inp_img)
+    ax2.imshow(image)
+    ax3.imshow(gradx, cmap="gray")
+    ax4.imshow(grady, cmap="gray")
+    ax5.imshow(mag_binary, cmap="gray")
+    ax6.imshow(dir_binary, cmap="gray")
+    ax7.imshow(combined, cmap="gray")
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+    return combined
+for image in image_list:
+    image_read = mpimg.imread(image)
+    sobel_plus_hsv_test(image_read)
+    
+from main import *
+for image in image_list:
+    image_read = mpimg.imread(image)
+    sobel_plus_hsv_test(image_read)
+    
+def sobel_plus_hsv_test(inp_img, ksize=5, s_thresh=(170, 255), sx_thresh=(20, 100), x_thresh=(20, 100), y_thresh=(20, 100), mag_thresh=(30, 100), dir_thresh=(0.7, 1.3)):
+    image = pipeline(inp_img, s_thresh=s_thresh, sx_thresh=sx_thresh)
+    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=x_thresh)
+    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=y_thresh)
+    mag_binary = mag_thresh(image, sobel_kernel=ksize, thresh=mag_thresh)
+    dir_binary = dir_thresh(image, sobel_kernel=ksize, thresh=dir_thresh)
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
+    f.tight_layout()
+    ax1.imshow(inp_img)
+    ax2.imshow(image)
+    ax3.imshow(gradx, cmap="gray")
+    ax4.imshow(grady, cmap="gray")
+    ax5.imshow(mag_binary, cmap="gray")
+    ax6.imshow(dir_binary, cmap="gray")
+    ax7.imshow(combined, cmap="gray")
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+    return combined
+for image in image_list:
+    image_read = mpimg.imread(image)
+    sobel_plus_hsv_test(image_read)
+    
+def sobel_plus_hsv_test(inp_img, ksize=5, s_thresh=(170, 255), sx_thresh=(20, 100), x_thresh=(20, 100), y_thresh=(20, 100), mag_thresh=(30, 100), dir_thresh=(0.7, 1.3)):
+    image = pipeline(inp_img, s_thresh=s_thresh, sx_thresh=sx_thresh)
+    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=x_thresh)grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=y_thresh)
+    mag_binary = mag_thresh(image, sobel_kernel=ksize, thresh=mag_thresh)
+    dir_binary = dir_thresh(image, sobel_kernel=ksize, thresh=dir_thresh)
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
+    f.tight_layout()
+    ax1.imshow(inp_img)
+    ax2.imshow(image)
+    ax3.imshow(gradx, cmap="gray")
+    ax4.imshow(grady, cmap="gray")
+    ax5.imshow(mag_binary, cmap="gray")
+    ax6.imshow(dir_binary, cmap="gray")
+    ax7.imshow(combined, cmap="gray")
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+    return combined
+def sobel_plus_hsv_test(inp_img, ksize=5):
+    image = pipeline(inp_img)
+    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=(20, 100))
+    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=(20, 100))
+    mag_binary = mag_thresh(image, sobel_kernel=ksize, mag_thresh=(30, 100))
+    dir_binary = dir_threshold(image, sobel_kernel=ksize, thresh=(0.7, 1.3))
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
+    f.tight_layout()
+    ax1.imshow(inp_img)
+    ax2.imshow(image)
+    ax3.imshow(gradx, cmap="gray")
+    ax4.imshow(grady, cmap="gray")
+    ax5.imshow(mag_binary, cmap="gray")
+    ax6.imshow(dir_binary, cmap="gray")
+    ax7.imshow(combined, cmap="gray")
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+    return combined
+
+for image in image_list:
+    image_read = mpimg.imread(image)
+    sobel_plus_hsv_test(image_read)
+    
+def sobel_plus_hsv_test(inp_img, ksize=5):
+    image = pipeline(inp_img)
+    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=(20, 100))
+    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=(20, 100))
+    mag_binary = mag_thresh(image, sobel_kernel=ksize, thresh=(30, 100))
+    dir_binary = dir_threshold(image, sobel_kernel=ksize, thresh=(0.7, 1.3))
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
+    f.tight_layout()
+    ax1.imshow(inp_img)
+    ax2.imshow(image)
+    ax3.imshow(gradx, cmap="gray")
+    ax4.imshow(grady, cmap="gray")
+    ax5.imshow(mag_binary, cmap="gray")
+    ax6.imshow(dir_binary, cmap="gray")
+    ax7.imshow(combined, cmap="gray")
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+    return combined
+for image in image_list:
+    image_read = mpimg.imread(image)
+    sobel_plus_hsv_test(image_read)
+    
