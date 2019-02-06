@@ -199,6 +199,34 @@ class ExtractLaneLines():
         combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
         return combined
 
+
+class PerspectiveTransform:
+    '''
+    For given set of source and distination coodinates
+    methods to wrap and unwrap perspective
+    '''
+    def __init__(self, image_shape, src=np.float32([[550, 480], [740, 480], [1020, 660], [300, 660]]), offset=100):
+        self.img_size = (image_shape[1], image_shape[0])
+        dst = np.float32([[offset, offset], 
+                        [self.img_size[0]-offset, offset], 
+                        [self.img_size[0]-offset, self.img_size[1]-offset], 
+                        [offset, self.img_size[1]-offset]])
+        self.M = self.getPerpectiveTransform(src, dst)
+        self.invM = self.getPerpectiveTransform(dst, src)
+    
+    def getPerpectiveTransform(self, src, dst):
+        return cv2.getPerspectiveTransform(src, dst)
+    
+    def warpPerspective(self, image, perspective_transform):
+        return cv2.warpPerspective(image, perspective_transform, self.img_size, flags=cv2.INTER_LINEAR)
+
+    def warpImage(self, image):
+        return self.warpPerspective(image, self.M)
+
+    def unwarpImage(self, image):
+        return self.warpPerspective(image, self.invM)
+
+
 if __name__ == "__main__":
     ## Testing camera calibration and image undistortion
     image_calibration = CalibrateCamera(debug=True)
