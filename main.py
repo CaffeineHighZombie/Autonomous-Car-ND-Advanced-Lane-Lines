@@ -106,7 +106,7 @@ def mag_thresh(img, sobel_kernel=3, mag_thresh=(0, 255)):
     # 6) Return this mask as your binary_output image
     return mag_output
 
-def dir_threshold(img, sobel_kernel=3, thresh=(0, np.pi/2)):
+def dir_thresh(img, sobel_kernel=3, thresh=(0, np.pi/2)):
     # Apply the following steps to img
     # 1) Convert to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
@@ -123,6 +123,19 @@ def dir_threshold(img, sobel_kernel=3, thresh=(0, np.pi/2)):
     dir_output[(arc_sobel >= thresh[0]) & (arc_sobel <= thresh[1])] = 1
     # 6) Return this mask as your binary_output image
     return dir_output
+
+def combining_thresholds():
+    pass
+
+def plot_image_side_by_side(image1, image2):
+    f, (ax1, ax2) = plt.subplots(1, 2, figsize=(24, 9))
+    f.tight_layout()
+    ax1.imshow(image1)
+    ax1.set_title('Original Image', fontsize=50)
+    ax2.imshow(image2, cmap='gray')
+    ax2.set_title('Combined Image', fontsize=50)
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
 
 def pipeline(img, s_thresh=(170, 255), sx_thresh=(20, 100)):
     img = np.copy(img)
