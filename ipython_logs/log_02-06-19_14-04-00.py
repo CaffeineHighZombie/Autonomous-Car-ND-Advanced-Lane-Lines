@@ -512,3 +512,4 @@ for image in image_list:
     image_read = mpimg.imread(image)
     sobel_plus_hsv_test(image_read)
     
+exit()

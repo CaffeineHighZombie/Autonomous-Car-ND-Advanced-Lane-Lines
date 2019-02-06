@@ -68,127 +68,136 @@ class CalibrateCamera:
             plt.show()
         return undist
 
-## Functions for image thresholding
-def abs_sobel_thresh(img, orient='x', sobel_kernel=3, thresh=(0, 255)):
-    # Apply the following steps to img
-    # 1) Convert to grayscale
-    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-    # 2) Take the derivative in x or y given orient = 'x' or 'y'
-    if orient=='x':
-        sobel = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=sobel_kernel)
-    else:
-        sobel = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=sobel_kernel)
-    # 3) Take the absolute value of the derivative or gradient
-    abs_sobel = np.absolute(sobel)
-    # 4) Scale to 8-bit (0 - 255) then convert to type = np.uint8
-    scaled_sobel = np.uint8(255*abs_sobel/np.max(abs_sobel))
-    # 5) Create a mask of 1's where the scaled gradient magnitude 
+class ExtractLaneLines():
+    '''
+    Class to extract lane line pixels for a given image
+    Applying gradient, color thresholding techniques
+    '''
+
+    def __init__(self, sobel_kernel=15, x_thresh=(20, 100), y_thresh=(20, 100), m_thresh=(30, 100), d_thresh=(0.7, 1.3), s_thresh=(170, 255), sx_thresh=(20, 100)):
+        '''
+        '''
+        self.sobel_kernel = sobel_kernel
+        self.x_thresh = x_thresh
+        self.y_thresh = y_thresh
+        self.m_thresh = m_thresh
+        self.d_thresh = d_thresh
+        self.s_thresh = s_thresh
+        self.sx_thresh = sx_thresh
+
+    def abs_sobel_thresh(self, gray, orient='x', thresh=(0, 255)):
+        # Take the derivative in x or y given orient = 'x' or 'y'
+        if orient=='x':
+            sobel = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=self.sobel_kernel)
+        else:
+            sobel = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=self.sobel_kernel)
+        # Take the absolute value of the derivative or gradient
+        abs_sobel = np.absolute(sobel)
+        # Scale to 8-bit (0 - 255) then convert to type = np.uint8
+        scaled_sobel = np.uint8(255*abs_sobel/np.max(abs_sobel))
+        # Create a mask of 1's where the scaled gradient magnitude 
             # is > thresh_min and < thresh_max
-    grad_output = np.zeros_like(scaled_sobel)
-    grad_output[(scaled_sobel >= thresh[0]) & (scaled_sobel <= thresh[1])] = 1
-    # 6) Return this mask as your binary_output image
-    return grad_output
+        grad_output = np.zeros_like(scaled_sobel)
+        grad_output[(scaled_sobel >= thresh[0]) & (scaled_sobel <= thresh[1])] = 1
+        # 6) Return this mask as your binary_output image
+        return grad_output
 
-def mag_thresh(img, sobel_kernel=3, thresh=(0, 255)):
-    # Apply the following steps to img
-    # 1) Convert to grayscale
-    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-    # 2) Take the gradient in x and y separately
-    sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=sobel_kernel)
-    sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=sobel_kernel)
-    # 3) Calculate the magnitude 
-    sobelxy = np.sqrt(np.square(sobelx) + np.square(sobely))
-    # 4) Scale to 8-bit (0 - 255) and convert to type = np.uint8
-    scaled_sobel = np.uint8(255*sobelxy/np.max(sobelxy))
-    # 5) Create a binary mask where mag thresholds are met
-    mag_output = np.zeros_like(scaled_sobel)
-    mag_output[(scaled_sobel >= thresh[0]) & (scaled_sobel <= thresh[1])] = 1
-    # 6) Return this mask as your binary_output image
-    return mag_output
+    def mag_thresh(self, gray, thresh=(0, 255)):
+        # Take the gradient in x and y separately
+        sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=self.sobel_kernel)
+        sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=self.sobel_kernel)
+        # Calculate the magnitude 
+        sobelxy = np.sqrt(np.square(sobelx) + np.square(sobely))
+        # Scale to 8-bit (0 - 255) and convert to type = np.uint8
+        scaled_sobel = np.uint8(255*sobelxy/np.max(sobelxy))
+        # 5) Create a binary mask where mag thresholds are met
+        mag_output = np.zeros_like(scaled_sobel)
+        mag_output[(scaled_sobel >= thresh[0]) & (scaled_sobel <= thresh[1])] = 1
+        # 6) Return this mask as your binary_output image
+        return mag_output
 
-def dir_thresh(img, sobel_kernel=3, thresh=(0, np.pi/2)):
-    # Apply the following steps to img
-    # 1) Convert to grayscale
-    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-    # 2) Take the gradient in x and y separately
-    sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=sobel_kernel)
-    sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=sobel_kernel)
-    # 3) Take the absolute value of the x and y gradients
-    abs_sobelx = np.absolute(sobelx)
-    abs_sobely = np.absolute(sobely)
-    # 4) Use np.arctan2(abs_sobely, abs_sobelx) to calculate the direction of the gradient 
-    arc_sobel = np.arctan2(abs_sobely, abs_sobelx)
-    # 5) Create a binary mask where direction thresholds are met
-    dir_output = np.zeros_like(arc_sobel)
-    dir_output[(arc_sobel >= thresh[0]) & (arc_sobel <= thresh[1])] = 1
-    # 6) Return this mask as your binary_output image
-    return dir_output
+    def dir_thresh(self, gray, thresh=(0, np.pi/2)):
+        # Take the gradient in x and y separately
+        sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=self.sobel_kernel)
+        sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=self.sobel_kernel)
+        # Take the absolute value of the x and y gradients
+        abs_sobelx = np.absolute(sobelx)
+        abs_sobely = np.absolute(sobely)
+        # Use np.arctan2(abs_sobely, abs_sobelx) to calculate the direction of the gradient 
+        arc_sobel = np.arctan2(abs_sobely, abs_sobelx)
+        # Create a binary mask where direction thresholds are met
+        dir_output = np.zeros_like(arc_sobel)
+        dir_output[(arc_sobel >= thresh[0]) & (arc_sobel <= thresh[1])] = 1
+        # 6) Return this mask as your binary_output image
+        return dir_output
 
-def combining_thresholds():
-    pass
+    def hsi_thresh(self, img, thresh=(170, 255), x_thresh=(20, 100)):
+        img = np.copy(img)
+        # Convert to HLS color space and separate the V channel
+        hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
+        l_channel = hls[:,:,1]
+        s_channel = hls[:,:,2]
+        # Sobel x
+        sobelx = cv2.Sobel(l_channel, cv2.CV_64F, 1, 0) # Take the derivative in x
+        abs_sobelx = np.absolute(sobelx) # Absolute x derivative to accentuate lines away from horizontal
+        scaled_sobel = np.uint8(255*abs_sobelx/np.max(abs_sobelx))
+        # Threshold x gradient
+        sxbinary = np.zeros_like(scaled_sobel)
+        sxbinary[(scaled_sobel >= x_thresh[0]) & (scaled_sobel <= x_thresh[1])] = 1
+        # Threshold color channel
+        s_binary = np.zeros_like(s_channel)
+        s_binary[(s_channel >= thresh[0]) & (s_channel <= thresh[1])] = 1
+        # Stack each channel
+        color_binary = np.dstack(( np.zeros_like(sxbinary), sxbinary, s_binary)) * 255
+        return color_binary
 
-def plot_image_side_by_side(image1, image2):
-    f, (ax1, ax2) = plt.subplots(1, 2, figsize=(24, 9))
-    f.tight_layout()
-    ax1.imshow(image1)
-    ax1.set_title('Original Image', fontsize=50)
-    ax2.imshow(image2, cmap='gray')
-    ax2.set_title('Combined Image', fontsize=50)
-    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
-    plt.show()
+    def sobel_plus_hsv_thresh_debug(self, img):
+        # Get the HSI thresholded image
+        hsi_image = self.hsi_thresh(img, self.s_thresh, self.sx_thresh)
+        # Convert image to grayscale
+        gray = cv2.cvtColor(hsi_image, cv2.COLOR_RGB2GRAY)
+        # Get x axis threshold gradient image
+        gradx = self.abs_sobel_thresh(gray, orient='x', thresh=self.x_thresh)
+        # Get y axis threshold gradient image
+        grady = self.abs_sobel_thresh(gray, orient='y', thresh=self.y_thresh)
+        # Get magnitude threshold gradient image
+        mag_binary = self.mag_thresh(gray, thresh=self.m_thresh)
+        # Get directional threshold gradient image
+        dir_binary = self.dir_thresh(gray, thresh=self.d_thresh)
+        # Create a composite image of thresholded outputs
+        combined = np.zeros_like(dir_binary)
+        combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+        # Plotting the output for debugging purpose
+        f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
+        f.tight_layout()
+        ax1.imshow(img)
+        ax2.imshow(hsi_image)
+        ax3.imshow(gradx, cmap="gray")
+        ax4.imshow(grady, cmap="gray")
+        ax5.imshow(mag_binary, cmap="gray")
+        ax6.imshow(dir_binary, cmap="gray")
+        ax7.imshow(combined, cmap="gray")
+        plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+        plt.show()
+        return combined
 
-def pipeline(img, s_thresh=(170, 255), sx_thresh=(20, 100)):
-    img = np.copy(img)
-    # Convert to HLS color space and separate the V channel
-    hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
-    l_channel = hls[:,:,1]
-    s_channel = hls[:,:,2]
-    # Sobel x
-    sobelx = cv2.Sobel(l_channel, cv2.CV_64F, 1, 0) # Take the derivative in x
-    abs_sobelx = np.absolute(sobelx) # Absolute x derivative to accentuate lines away from horizontal
-    scaled_sobel = np.uint8(255*abs_sobelx/np.max(abs_sobelx))
-    
-    # Threshold x gradient
-    sxbinary = np.zeros_like(scaled_sobel)
-    sxbinary[(scaled_sobel >= sx_thresh[0]) & (scaled_sobel <= sx_thresh[1])] = 1
-    
-    # Threshold color channel
-    s_binary = np.zeros_like(s_channel)
-    s_binary[(s_channel >= s_thresh[0]) & (s_channel <= s_thresh[1])] = 1
-    # Stack each channel
-    color_binary = np.dstack(( np.zeros_like(sxbinary), sxbinary, s_binary)) * 255
-    return color_binary
-
-def sobel_plus_hsv_test(inp_img, ksize=5):
-    image = pipeline(inp_img)
-    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=(20, 100))
-    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=(20, 100))
-    mag_binary = mag_thresh(image, sobel_kernel=ksize, thresh=(30, 100))
-    dir_binary = dir_thresh(image, sobel_kernel=ksize, thresh=(0.7, 1.3))
-    combined = np.zeros_like(dir_binary)
-    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
-    f, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8)) = plt.subplots(2, 4, figsize=(24, 9))
-    f.tight_layout()
-    ax1.imshow(inp_img)
-    ax2.imshow(image)
-    ax3.imshow(gradx, cmap="gray")
-    ax4.imshow(grady, cmap="gray")
-    ax5.imshow(mag_binary, cmap="gray")
-    ax6.imshow(dir_binary, cmap="gray")
-    ax7.imshow(combined, cmap="gray")
-    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
-    plt.show()
-    return combined
-
-def sobel_plus_hsv_output(inp_img, ksize=5):
-    image = pipeline(inp_img)
-    gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=(20, 100))
-    grady = abs_sobel_thresh(image, orient='y', sobel_kernel=ksize, thresh=(20, 100))
-    mag_binary = mag_thresh(image, sobel_kernel=ksize, thresh=(30, 100))
-    dir_binary = dir_thresh(image, sobel_kernel=ksize, thresh=(0.7, 1.3))
-    combined = np.zeros_like(dir_binary)
-    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
-    return combined
+    def sobel_plus_hsv_thresh(self, img):
+        # Get the HSI thresholded image
+        hsi_image = self.hsi_thresh(img, self.s_thresh, self.sx_thresh)
+        # Convert image to grayscale
+        gray = cv2.cvtColor(hsi_image, cv2.COLOR_RGB2GRAY)
+        # Get x axis threshold gradient image
+        gradx = self.abs_sobel_thresh(gray, orient='x', thresh=self.x_thresh)
+        # Get y axis threshold gradient image
+        grady = self.abs_sobel_thresh(gray, orient='y', thresh=self.y_thresh)
+        # Get magnitude threshold gradient image
+        mag_binary = self.mag_thresh(gray, thresh=self.m_thresh)
+        # Get directional threshold gradient image
+        dir_binary = self.dir_thresh(gray, thresh=self.d_thresh)
+        # Create a composite image of thresholded outputs
+        combined = np.zeros_like(dir_binary)
+        combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+        return combined
 
 if __name__ == "__main__":
     ## Testing camera calibration and image undistortion
